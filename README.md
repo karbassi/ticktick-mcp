@@ -1,4 +1,4 @@
-# ticktick-mcp
+# mcp-ticktick
 
 MCP server for [TickTick](https://ticktick.com) task management. Provides 45 tools and 4 resources covering tasks, projects, tags, folders, habits, filters, focus/pomodoro, and calendar.
 
@@ -12,14 +12,14 @@ MCP server for [TickTick](https://ticktick.com) task management. Provides 45 too
 ### Install
 
 ```bash
-pip install ticktick-mcp
+pip install mcp-ticktick
 ```
 
 Or from source:
 
 ```bash
-git clone https://github.com/karbassi/ticktick-mcp.git
-cd ticktick-mcp
+git clone https://github.com/karbassi/mcp-ticktick.git
+cd mcp-ticktick
 uv sync
 ```
 
@@ -43,7 +43,7 @@ Add to your Claude Desktop config (`~/Library/Application Support/Claude/claude_
 {
   "mcpServers": {
     "ticktick": {
-      "command": "ticktick-mcp",
+      "command": "mcp-ticktick",
       "env": {
         "TICKTICK_ACCESS_TOKEN": "your-access-token",
         "TICKTICK_V2_SESSION_TOKEN": "your-session-cookie"
