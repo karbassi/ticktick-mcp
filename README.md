@@ -1,15 +1,28 @@
 # mcp-ticktick
 
-MCP server for [TickTick](https://ticktick.com) task management. Provides 45 tools and 4 resources covering tasks, projects, tags, folders, habits, filters, focus/pomodoro, and calendar.
+A [Model Context Protocol](https://modelcontextprotocol.io/) server that gives LLMs full access to [TickTick](https://ticktick.com) — tasks, projects, habits, focus timers, and more.
 
-## Setup
+45 tools. 4 resources. Covers every TickTick feature.
 
-### Prerequisites
+## Features
+
+- **Tasks** — create, edit, complete, delete, move, nest subtasks, view trash
+- **Projects** — CRUD, fuzzy name matching
+- **Tags** — create, rename, merge, organize hierarchically
+- **Folders** — group projects into folders
+- **Habits** — track habits, check in, view streaks, manage sections
+- **Filters** — saved custom filters
+- **Focus** — save pomodoro records, view stats and session history
+- **Calendar** — list connected calendars and events
+- **Resources** — read-only access to profile, settings, projects, and tags
+
+## Requirements
 
 - Python 3.12+
-- A TickTick account with an [OAuth app](https://developer.ticktick.com/manage) (for v1 API access)
+- A TickTick account
+- An [OAuth app](https://developer.ticktick.com/manage) (free to create)
 
-### Install
+## Install
 
 ```bash
 pip install mcp-ticktick
@@ -18,32 +31,34 @@ pip install mcp-ticktick
 Or from source:
 
 ```bash
-git clone https://github.com/karbassi/mcp-ticktick.git
-cd mcp-ticktick
+git clone https://github.com/karbassi/ticktick-mcp.git
+cd ticktick-mcp
 uv sync
 ```
+
+## Configuration
 
 ### Environment Variables
 
 | Variable | Required | Description |
 |---|---|---|
-| `TICKTICK_ACCESS_TOKEN` | Yes | OAuth access token from the [TickTick developer portal](https://developer.ticktick.com) |
+| `TICKTICK_ACCESS_TOKEN` | Yes | OAuth access token from the [developer portal](https://developer.ticktick.com) |
 | `TICKTICK_CLIENT_ID` | No | OAuth client ID (for token refresh) |
 | `TICKTICK_CLIENT_SECRET` | No | OAuth client secret (for token refresh) |
 | `TICKTICK_REFRESH_TOKEN` | No | OAuth refresh token |
-| `TICKTICK_V2_SESSION_TOKEN` | No | Browser session cookie (`t`) for v2 API features |
+| `TICKTICK_V2_SESSION_TOKEN` | No | Browser `t` cookie for v2 API features |
 
-The v1 API (access token) covers tasks and projects. For tags, folders, filters, habits, focus, and calendar, you also need a v2 session token — grab the `t` cookie from your browser while logged into ticktick.com.
+> **v1 vs v2:** The access token covers tasks and projects. For tags, folders, filters, habits, focus, and calendar, you also need a v2 session token — grab the `t` cookie from your browser while logged into ticktick.com.
 
 ### Claude Desktop
 
-Add to your Claude Desktop config (`~/Library/Application Support/Claude/claude_desktop_config.json`):
+Add to `~/Library/Application Support/Claude/claude_desktop_config.json`:
 
 ```json
 {
   "mcpServers": {
     "ticktick": {
-      "command": "mcp-ticktick",
+      "command": "ticktick-mcp",
       "env": {
         "TICKTICK_ACCESS_TOKEN": "your-access-token",
         "TICKTICK_V2_SESSION_TOKEN": "your-session-cookie"
@@ -53,31 +68,100 @@ Add to your Claude Desktop config (`~/Library/Application Support/Claude/claude_
 }
 ```
 
+### Claude Code
+
+```bash
+claude mcp add ticktick-mcp -- ticktick-mcp
+```
+
+Then set the environment variables in your shell.
+
 ## Tools
 
-### Tasks (10 tools)
-`list_tasks` `get_task` `add_task` `edit_task` `complete_task` `delete_task` `move_task` `set_subtask` `unparent_task` `list_trash`
+### Tasks (10)
 
-### Projects (5 tools)
-`list_projects` `get_project` `add_project` `edit_project` `delete_project`
+| Tool | Description |
+|---|---|
+| `list_tasks` | List tasks from a project or all projects |
+| `get_task` | Get a single task by ID |
+| `add_task` | Create a task with due date, priority, tags, checklist |
+| `edit_task` | Update task fields |
+| `complete_task` | Mark a task complete |
+| `delete_task` | Delete a task |
+| `move_task` | Move a task between projects |
+| `set_subtask` | Make a task a subtask of another |
+| `unparent_task` | Remove a task from its parent |
+| `list_trash` | List deleted tasks |
 
-### Tags (6 tools)
-`list_tags` `add_tags` `delete_tags` `rename_tag` `edit_tag` `merge_tags`
+### Projects (5)
 
-### Folders (4 tools)
-`list_folders` `add_folder` `delete_folders` `rename_folder`
+| Tool | Description |
+|---|---|
+| `list_projects` | List all projects |
+| `get_project` | Get a project by name or ID (fuzzy match) |
+| `add_project` | Create a new project |
+| `edit_project` | Update project properties |
+| `delete_project` | Delete a project and its tasks |
 
-### Habits (8 tools)
-`list_habits` `add_habit` `edit_habit` `delete_habits` `checkin_habit` `habit_log` `archive_habits` `manage_habit_sections`
+### Tags (6)
 
-### Filters (4 tools)
-`list_filters` `add_filter` `edit_filter` `delete_filters`
+| Tool | Description |
+|---|---|
+| `list_tags` | List all tags |
+| `add_tags` | Create one or more tags |
+| `delete_tags` | Delete tags |
+| `rename_tag` | Rename a tag (updates all tasks) |
+| `edit_tag` | Update tag color, parent, sort |
+| `merge_tags` | Merge one tag into another |
 
-### Focus (5 tools)
-`focus_status` `focus_stats` `focus_log` `focus_timeline` `focus_save`
+### Folders (4)
 
-### Calendar (3 tools)
-`list_calendars` `list_events` `sync_account`
+| Tool | Description |
+|---|---|
+| `list_folders` | List all project folders |
+| `add_folder` | Create a folder |
+| `delete_folders` | Delete folders |
+| `rename_folder` | Rename a folder |
+
+### Habits (8)
+
+| Tool | Description |
+|---|---|
+| `list_habits` | List all habits |
+| `add_habit` | Create a boolean or numeric habit |
+| `edit_habit` | Update habit properties |
+| `delete_habits` | Delete habits |
+| `checkin_habit` | Record a habit check-in |
+| `habit_log` | Query check-in history |
+| `archive_habits` | Archive habits (hide, keep data) |
+| `manage_habit_sections` | List, add, delete, rename sections |
+
+### Filters (4)
+
+| Tool | Description |
+|---|---|
+| `list_filters` | List saved filters |
+| `add_filter` | Create a filter |
+| `edit_filter` | Update a filter |
+| `delete_filters` | Delete filters |
+
+### Focus (5)
+
+| Tool | Description |
+|---|---|
+| `focus_status` | Current timer status |
+| `focus_stats` | Daily and total focus statistics |
+| `focus_log` | Focus sessions for a date range |
+| `focus_timeline` | Full session history |
+| `focus_save` | Save a completed pomodoro record |
+
+### Calendar (3)
+
+| Tool | Description |
+|---|---|
+| `list_calendars` | List connected calendar accounts |
+| `list_events` | Query events for a date range |
+| `sync_account` | Full account sync |
 
 ## Resources
 
@@ -91,11 +175,18 @@ Add to your Claude Desktop config (`~/Library/Application Support/Claude/claude_
 ## Development
 
 ```bash
+git clone https://github.com/karbassi/ticktick-mcp.git
+cd ticktick-mcp
 uv sync --all-extras
+
+# Lint & type check
 uv run ruff check src/ tests/
+uv run pyright src/
+
+# Test
 uv run pytest
 ```
 
 ## License
 
-MIT
+[MIT](LICENSE)
