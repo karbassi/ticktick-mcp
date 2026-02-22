@@ -1,14 +1,13 @@
 from __future__ import annotations
 
 import time
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from typing import Any
 
 from fastmcp import Context, FastMCP
 from fastmcp.exceptions import ToolError
 
 from ticktick_mcp.client import TickTickClient
-from ticktick_mcp.dates import date_to_epoch_ms
 
 
 def _get_client(ctx: Context) -> TickTickClient:
@@ -22,10 +21,9 @@ def _generate_focus_id() -> str:
     return f"{ms:x}{seed & 0xFFFFFFFF:08x}"
 
 
-def _now_iso() -> str:
-    """Current time in ISO format with +0000 UTC offset."""
-    now = datetime.now(UTC)
-    return now.strftime("%Y-%m-%dT%H:%M:%S.") + f"{now.microsecond // 1000:03d}+0000"
+def _to_iso(dt: datetime) -> str:
+    """Format a datetime as ISO with +0000 UTC offset (TickTick format)."""
+    return dt.strftime("%Y-%m-%dT%H:%M:%S.") + f"{dt.microsecond // 1000:03d}+0000"
 
 
 def register(mcp: FastMCP) -> None:
@@ -59,6 +57,9 @@ def register(mcp: FastMCP) -> None:
 
         Returns daily and total focus time statistics including session counts
         and total minutes. Requires v2 session token.
+
+        Note: "total" fields may exclude the current day (TickTick caches these).
+        Use focus_log for accurate current-day data.
         """
         client = _get_client(ctx)
         return await client.v2_get("/pomodoros/statistics/generalForDesktop")
@@ -83,6 +84,8 @@ def register(mcp: FastMCP) -> None:
             to_date: End date: "today", "yesterday", or "YYYY-MM-DD".
         """
         client = _get_client(ctx)
+        from ticktick_mcp.dates import date_to_epoch_ms
+
         from_ms = date_to_epoch_ms(from_date)
         to_ms = date_to_epoch_ms(to_date) + 86400000 - 1  # End of day
         return await client.v2_get(f"/pomodoros?from={from_ms}&to={to_ms}")
@@ -109,82 +112,69 @@ def register(mcp: FastMCP) -> None:
             "readOnlyHint": False,
             "destructiveHint": False,
             "idempotentHint": False,
-            "openWorldHint": True,
+            "openWorldHint": False,
         }
     )
-    async def focus_start(
+    async def focus_save(
         ctx: Context,
-        duration_minutes: int = 25,
+        duration_minutes: int,
+        end: str = "now",
+        note: str = "",
         task_id: str | None = None,
         project_id: str | None = None,
     ) -> Any:
-        """Start a new focus/pomodoro session.
+        """Save a completed focus/pomodoro record.
+
+        Records a focus session that has already happened. This does not start
+        a live timer — it saves a historical record.
 
         Args:
-            duration_minutes: Focus duration in minutes (default: 25).
-            task_id: Optional task ID to associate with this focus session.
+            duration_minutes: Duration of the focus session in minutes. Must be >= 1.
+            end: End time: "now" (default) or ISO datetime string (e.g. "2026-02-22T14:30:00").
+            note: Optional note to attach to the session.
+            task_id: Optional task ID to associate with the session.
             project_id: Optional project ID (required if task_id is provided).
         """
-        client = _get_client(ctx)
-        session_id = _generate_focus_id()
-        now = _now_iso()
-        now_ms = int(time.time() * 1000)
+        if duration_minutes < 1:
+            raise ToolError("duration_minutes must be >= 1")
 
-        op: dict[str, Any] = {
-            "op": "start",
-            "id": session_id,
-            "startTime": now,
-            "estimatedPomo": duration_minutes * 60 * 1000,
-            "opTime": now_ms,
+        if end == "now":
+            end_dt = datetime.now(UTC)
+        else:
+            try:
+                end_dt = datetime.fromisoformat(end).astimezone(UTC)
+            except ValueError:
+                raise ToolError(
+                    f"Invalid end time '{end}'. Use 'now' or ISO format like '2026-02-22T14:30:00'."
+                ) from None
+
+        start_dt = end_dt - timedelta(minutes=duration_minutes)
+
+        start_iso = _to_iso(start_dt)
+        end_iso = _to_iso(end_dt)
+
+        task_entry: dict[str, Any] = {
+            "startTime": start_iso,
+            "endTime": end_iso,
+            "title": "",
         }
-
         if task_id:
-            op["taskId"] = task_id
+            task_entry["taskId"] = task_id
         if project_id:
-            op["projectId"] = project_id
+            task_entry["projectId"] = project_id
 
-        return await client.focus_op([op])
-
-    @mcp.tool(
-        annotations={
-            "readOnlyHint": False,
-            "destructiveHint": False,
-            "idempotentHint": True,
-            "openWorldHint": True,
+        record: dict[str, Any] = {
+            "id": _generate_focus_id(),
+            "startTime": start_iso,
+            "endTime": end_iso,
+            "status": 1,
+            "pauseDuration": 0,
+            "tasks": [task_entry],
+            "note": note,
         }
-    )
-    async def focus_control(
-        ctx: Context,
-        action: str,
-        session_id: str | None = None,
-    ) -> Any:
-        """Control an active focus session (pause, resume, or stop).
 
-        Use focus_status to get the current session ID if needed.
-
-        Args:
-            action: "pause", "resume", or "stop".
-            session_id: The focus session ID. If omitted, fetches the current session.
-        """
         client = _get_client(ctx)
-
-        if action not in ("pause", "resume", "stop"):
-            raise ToolError(f"Invalid action '{action}'. Use: pause, resume, stop")
-
-        if not session_id:
-            status = await client.v2_get("/timer")
-            session_id = status.get("id") or status.get("focusId")
-            if not session_id:
-                raise ToolError("No active focus session found")
-
-        now_ms = int(time.time() * 1000)
-        op: dict[str, Any] = {
-            "op": action,
-            "id": session_id,
-            "opTime": now_ms,
-        }
-
-        if action == "stop":
-            op["endTime"] = _now_iso()
-
-        return await client.focus_op([op])
+        return await client.v2_post(
+            "/batch/pomodoro",
+            {"add": [record], "update": [], "delete": []},
+        )

@@ -86,7 +86,7 @@ def register(mcp: FastMCP) -> None:
         if project:
             pid = await _resolve_project_id(client, project)
             data = await client.v1_get(f"/project/{pid}/data")
-            return data.get("tasks", [])
+            return data.get("tasks") or []
 
         # All projects
         projects = await client.v1_get("/project")
@@ -94,7 +94,7 @@ def register(mcp: FastMCP) -> None:
         for p in projects:
             try:
                 data = await client.v1_get(f"/project/{p['id']}/data")
-                all_tasks.extend(data.get("tasks", []))
+                all_tasks.extend(data.get("tasks") or [])
             except Exception:
                 continue
 
@@ -102,7 +102,7 @@ def register(mcp: FastMCP) -> None:
         try:
             inbox_id = await _get_inbox_id(client)
             data = await client.v1_get(f"/project/{inbox_id}/data")
-            all_tasks.extend(data.get("tasks", []))
+            all_tasks.extend(data.get("tasks") or [])
         except Exception:
             pass
 
@@ -461,4 +461,4 @@ def register(mcp: FastMCP) -> None:
         """
         client = _get_client(ctx)
         data = await client.v2_get("/project/all/trash/page")
-        return data.get("tasks", [])
+        return data.get("tasks") or []

@@ -15,7 +15,6 @@ logger = logging.getLogger(__name__)
 V1_BASE = "https://api.ticktick.com/open/v1"
 V2_BASE = "https://api.ticktick.com/api/v2"
 V3_BASE = "https://api.ticktick.com/api/v3"
-MS_BASE = "https://ms.ticktick.com"
 
 USER_AGENT = (
     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
@@ -135,7 +134,7 @@ class TickTickClient:
                 f"{V1_BASE}{endpoint}", headers=self._v1_headers(), json=json_data
             )
         resp.raise_for_status()
-        return resp.json()
+        return resp.json() if resp.content else None
 
     async def v1_post_empty(self, endpoint: str) -> httpx.Response:
         resp = await self.http.post(f"{V1_BASE}{endpoint}", headers=self._v1_headers())
@@ -163,6 +162,18 @@ class TickTickClient:
             )
         return self._session_token
 
+    @staticmethod
+    def _check_v2_response(resp: httpx.Response) -> None:
+        """Raise clear errors for common v2 API failures."""
+        if resp.status_code == 401:
+            raise RuntimeError(
+                "V2 session token is invalid or expired. "
+                "Update TICKTICK_V2_SESSION_TOKEN with a fresh 't' cookie from your browser."
+            )
+        if resp.status_code == 403:
+            raise RuntimeError("This feature requires a TickTick Premium subscription.")
+        resp.raise_for_status()
+
     def _v2_headers(self) -> dict[str, str]:
         token = self._require_session()
         return {
@@ -173,26 +184,26 @@ class TickTickClient:
 
     async def v2_get(self, endpoint: str) -> Any:
         resp = await self.http.get(f"{V2_BASE}{endpoint}", headers=self._v2_headers())
-        resp.raise_for_status()
+        self._check_v2_response(resp)
         return resp.json()
 
     async def v2_post(self, endpoint: str, json_data: Any) -> Any:
         resp = await self.http.post(
             f"{V2_BASE}{endpoint}", headers=self._v2_headers(), json=json_data
         )
-        resp.raise_for_status()
-        return resp.json()
+        self._check_v2_response(resp)
+        return resp.json() if resp.content else None
 
     async def v2_put(self, endpoint: str, json_data: Any) -> Any:
         resp = await self.http.put(
             f"{V2_BASE}{endpoint}", headers=self._v2_headers(), json=json_data
         )
-        resp.raise_for_status()
-        return resp.json()
+        self._check_v2_response(resp)
+        return resp.json() if resp.content else None
 
     async def v2_delete(self, endpoint: str) -> httpx.Response:
         resp = await self.http.delete(f"{V2_BASE}{endpoint}", headers=self._v2_headers())
-        resp.raise_for_status()
+        self._check_v2_response(resp)
         return resp
 
     # ------------------------------------------------------------------
@@ -202,19 +213,3 @@ class TickTickClient:
     async def batch_check(self) -> dict[str, Any]:
         """Full account state sync via v2 GET /batch/check/0."""
         return await self.v2_get("/batch/check/0")
-
-    # ------------------------------------------------------------------
-    # Focus control (ms.ticktick.com)
-    # ------------------------------------------------------------------
-
-    async def focus_op(self, ops: list[dict[str, Any]]) -> Any:
-        """Send focus operations to ms.ticktick.com."""
-        now_ms = int(time.time() * 1000)
-        body = {"lastPoint": now_ms, "opList": ops}
-        resp = await self.http.post(
-            f"{MS_BASE}/focus/batch/focusOp",
-            headers=self._v2_headers(),
-            json=body,
-        )
-        resp.raise_for_status()
-        return resp.json()

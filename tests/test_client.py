@@ -5,7 +5,6 @@ import pytest
 import respx
 
 from ticktick_mcp.client import (
-    MS_BASE,
     V1_BASE,
     V2_BASE,
     TickTickClient,
@@ -115,13 +114,3 @@ class TestV2Auth:
         async with c:
             with pytest.raises(RuntimeError, match="session token"):
                 await c.v2_get("/tags")
-
-
-class TestFocusOp:
-    @pytest.mark.anyio
-    async def test_focus_op(self, client: TickTickClient, mock_api: respx.MockRouter):
-        mock_api.post(f"{MS_BASE}/focus/batch/focusOp").mock(
-            return_value=httpx.Response(200, json={"status": "ok"})
-        )
-        result = await client.focus_op([{"op": "start", "id": "s1"}])
-        assert result["status"] == "ok"

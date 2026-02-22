@@ -4,15 +4,29 @@ on:
   push:
     branches: [main]
   pull_request:
+    branches: [main]
 
 jobs:
-  check:
+  lint-test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: astral-sh/setup-uv@v4
-      - run: uv sync --all-extras
-      - run: uv run ruff check src/ tests/
-      - run: uv run ruff format --check src/ tests/
-      - run: uv run pyright src/
-      - run: uv run pytest
+        with:
+          version: "latest"
+
+      - name: Install dependencies
+        run: uv sync --all-extras
+
+      - name: Lint
+        run: uv run ruff check src/ tests/
+
+      - name: Format check
+        run: uv run ruff format --check src/ tests/
+
+      - name: Type check
+        run: uv run pyright src/
+
+      - name: Test
+        run: uv run pytest

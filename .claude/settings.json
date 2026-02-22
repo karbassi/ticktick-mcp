@@ -2,6 +2,18 @@
   "permissions": {
     "additionalDirectories": [
       "../ticktick-cli"
+    ],
+    "allow": [
+      "WebSearch",
+      "Bash(uv sync:*)",
+      "Bash(uv run:*)",
+      "Bash(git init:*)",
+      "Bash(git reset:*)",
+      "Bash(git add:*)",
+      "Bash(gh issue:*)",
+      "Bash(op item get:*)",
+      "mcp__ticktick__*",
+      "mcp__chrome-devtools__*"
     ]
   },
   "plansDirectory": ".claude/plans"

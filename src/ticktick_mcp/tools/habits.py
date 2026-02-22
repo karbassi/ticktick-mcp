@@ -22,7 +22,7 @@ async def _resolve_habit(client: TickTickClient, name_or_id: str) -> tuple[str, 
     return resolve_name_with_etag(
         name_or_id,
         parsed,
-        lambda h: h.name,
+        lambda h: h.name or "",
         lambda h: h.id,
         lambda h: h.etag or "",
         "habit",

@@ -16,7 +16,7 @@ def _get_client(ctx: Context) -> TickTickClient:
 async def _resolve_folder_id(client: TickTickClient, name_or_id: str) -> tuple[str, str]:
     """Resolve a folder name/ID to (id, etag)."""
     data = await client.batch_check()
-    groups = [ProjectGroup(**g) for g in data.get("projectGroups", [])]
+    groups = [ProjectGroup(**g) for g in (data.get("projectGroups") or [])]
     return resolve_name_with_etag(
         name_or_id,
         groups,
@@ -44,7 +44,7 @@ def register(mcp: FastMCP) -> None:
         """
         client = _get_client(ctx)
         data = await client.batch_check()
-        return data.get("projectGroups", [])
+        return data.get("projectGroups") or []
 
     @mcp.tool(
         annotations={

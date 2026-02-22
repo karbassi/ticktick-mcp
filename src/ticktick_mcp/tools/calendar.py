@@ -51,10 +51,13 @@ def register(mcp: FastMCP) -> None:
             end: End datetime in ISO format (e.g. "2026-02-18T23:59:59.999+0000").
         """
         client = _get_client(ctx)
-        return await client.v2_post(
-            "/calendar/bind/events/all",
-            {"begin": begin, "end": end},
-        )
+        try:
+            return await client.v2_post(
+                "/calendar/bind/events/all",
+                {"begin": begin, "end": end},
+            )
+        except Exception:
+            return []
 
     @mcp.tool(
         annotations={

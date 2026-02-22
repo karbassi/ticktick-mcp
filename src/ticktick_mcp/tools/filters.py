@@ -16,7 +16,7 @@ def _get_client(ctx: Context) -> TickTickClient:
 async def _resolve_filter(client: TickTickClient, name_or_id: str) -> tuple[str, str]:
     """Resolve a filter name/ID to (id, etag)."""
     data = await client.batch_check()
-    filters = [Filter(**f) for f in data.get("filters", [])]
+    filters = [Filter(**f) for f in data.get("filters") or []]
     return resolve_name_with_etag(
         name_or_id,
         filters,
@@ -44,7 +44,7 @@ def register(mcp: FastMCP) -> None:
         """
         client = _get_client(ctx)
         data = await client.batch_check()
-        return data.get("filters", [])
+        return data.get("filters") or []
 
     @mcp.tool(
         annotations={

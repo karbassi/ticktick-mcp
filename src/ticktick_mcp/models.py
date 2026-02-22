@@ -60,7 +60,7 @@ class Tag(CamelModel):
 
 class Habit(CamelModel):
     id: str = ""
-    name: str = ""
+    name: str | None = ""
     icon_res: str | None = None
     color: str | None = None
     sort_order: int | None = None
@@ -79,7 +79,7 @@ class Habit(CamelModel):
     reminders: list[str] | None = None
     section_id: str | None = None
     target_days: int | None = None
-    target_start_date: str | None = None
+    target_start_date: int | None = None
     completed_cycles: int | None = None
     etag: str | None = None
 

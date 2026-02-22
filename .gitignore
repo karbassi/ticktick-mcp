@@ -8,6 +8,7 @@ build/
 *.egg
 .venv/
 .env
+.mcp.json
 .temp/
 .ruff_cache/
 .pyright/
