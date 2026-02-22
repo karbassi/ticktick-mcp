@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.2 (2026-02-22)
+
+- Add project URLs, author to PyPI sidebar metadata
+
 ## 0.1.1 (2026-02-22)
 
 - Fix PyPI project description (add readme to package metadata)
