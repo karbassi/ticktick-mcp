@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any
+import json
 
 from fastmcp import Context, FastMCP
 
@@ -13,9 +13,9 @@ def _get_client(ctx: Context) -> TickTickClient:
 
 def register(mcp: FastMCP) -> None:
     @mcp.resource("ticktick://profile")
-    async def profile(ctx: Context) -> dict[str, Any]:
+    async def profile(ctx: Context) -> str:
         """User profile and subscription status merged into one view."""
         client = _get_client(ctx)
         user_profile = await client.v2_get("/user/profile")
         user_status = await client.v2_get("/user/status")
-        return {**user_profile, "status": user_status}
+        return json.dumps({**user_profile, "status": user_status})

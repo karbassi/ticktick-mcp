@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any
+import json
 
 from fastmcp import Context, FastMCP
 
@@ -13,13 +13,13 @@ def _get_client(ctx: Context) -> TickTickClient:
 
 def register(mcp: FastMCP) -> None:
     @mcp.resource("ticktick://projects")
-    async def projects(ctx: Context) -> list[dict[str, Any]]:
+    async def projects(ctx: Context) -> str:
         """All projects (task lists) with their IDs, names, colors, and folder assignments."""
         client = _get_client(ctx)
-        return await client.v1_get("/project")
+        return json.dumps(await client.v1_get("/project"))
 
     @mcp.resource("ticktick://tags")
-    async def tags(ctx: Context) -> list[dict[str, Any]]:
+    async def tags(ctx: Context) -> str:
         """All tags with their names, colors, and hierarchical relationships."""
         client = _get_client(ctx)
-        return await client.v2_get("/tags")
+        return json.dumps(await client.v2_get("/tags"))

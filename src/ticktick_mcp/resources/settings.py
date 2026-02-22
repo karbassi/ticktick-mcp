@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any
+import json
 
 from fastmcp import Context, FastMCP
 
@@ -13,7 +13,7 @@ def _get_client(ctx: Context) -> TickTickClient:
 
 def register(mcp: FastMCP) -> None:
     @mcp.resource("ticktick://settings")
-    async def settings(ctx: Context) -> dict[str, Any]:
+    async def settings(ctx: Context) -> str:
         """User preference settings including web-specific options."""
         client = _get_client(ctx)
-        return await client.v2_get("/user/preferences/settings?includeWeb=true")
+        return json.dumps(await client.v2_get("/user/preferences/settings?includeWeb=true"))
