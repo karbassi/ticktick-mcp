@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.1 (2026-02-22)
+
+- Fix PyPI project description (add readme to package metadata)
+
 ## 0.1.0 (2026-02-22)
 
 Initial release.
