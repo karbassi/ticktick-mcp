@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "additionalDirectories": [
+      "../ticktick-cli"
+    ]
+  },
+  "plansDirectory": ".claude/plans"
+}
