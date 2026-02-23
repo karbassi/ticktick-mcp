@@ -1,6 +1,6 @@
 [project]
 name = "mcp-ticktick"
-version = "0.1.2"
+version = "0.2.0b1"
 description = "MCP server for TickTick task management"
 readme = "README.md"
 license = "MIT"
