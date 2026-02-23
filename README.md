@@ -1,51 +1,33 @@
+<div align="center">
+
 # mcp-ticktick
 
-A [Model Context Protocol](https://modelcontextprotocol.io/) server that gives LLMs full access to [TickTick](https://ticktick.com) — tasks, projects, habits, focus timers, and more.
+**Your entire TickTick — available to any AI.**
 
-45 tools. 4 resources. Covers every TickTick feature.
+[![PyPI](https://img.shields.io/pypi/v/mcp-ticktick?style=flat-square)](https://pypi.org/project/mcp-ticktick/)
+[![Python](https://img.shields.io/pypi/pyversions/mcp-ticktick?style=flat-square)](https://pypi.org/project/mcp-ticktick/)
+[![License](https://img.shields.io/github/license/karbassi/ticktick-mcp?style=flat-square)](LICENSE)
+[![CI](https://img.shields.io/github/actions/workflow/status/karbassi/ticktick-mcp/ci.yml?style=flat-square&label=tests)](https://github.com/karbassi/ticktick-mcp/actions)
 
-## Features
+A [Model Context Protocol](https://modelcontextprotocol.io/) server that gives LLMs full access to [TickTick](https://ticktick.com).<br>
+Tasks, projects, habits, focus timers, tags, filters, calendar — all of it.
 
-- **Tasks** — create, edit, complete, delete, move, nest subtasks, view trash
-- **Projects** — CRUD, fuzzy name matching
-- **Tags** — create, rename, merge, organize hierarchically
-- **Folders** — group projects into folders
-- **Habits** — track habits, check in, view streaks, manage sections
-- **Filters** — saved custom filters
-- **Focus** — save pomodoro records, view stats and session history
-- **Calendar** — list connected calendars and events
-- **Resources** — read-only access to profile, settings, projects, and tags
+**45 tools** · **4 resources** · **Every TickTick feature**
 
-## Requirements
+</div>
 
-- Python 3.12+
-- A TickTick account
-- An [OAuth app](https://developer.ticktick.com/manage) (free to create)
+---
 
-## Install
+## Quick Start
 
 ```bash
 pip install mcp-ticktick
 ```
 
-## Configuration
-
-### Environment Variables
-
-| Variable | Required | Description |
-|---|---|---|
-| `TICKTICK_ACCESS_TOKEN` | Yes | OAuth access token from the [developer portal](https://developer.ticktick.com) |
-| `TICKTICK_CLIENT_ID` | No | OAuth client ID (for token refresh) |
-| `TICKTICK_CLIENT_SECRET` | No | OAuth client secret (for token refresh) |
-| `TICKTICK_REFRESH_TOKEN` | No | OAuth refresh token |
-| `TICKTICK_V2_SESSION_TOKEN` | No | Browser `t` cookie for v2 API features |
-
-> **v1 vs v2:** The access token covers tasks and projects. For tags, folders, filters, habits, focus, and calendar, you also need a v2 session token — grab the `t` cookie from your browser while logged into ticktick.com.
-
-### Client Setup
+Then add it to your AI client of choice:
 
 <details>
-<summary>Claude Desktop</summary>
+<summary><strong>Claude Desktop</strong></summary>
 
 Add to `~/Library/Application Support/Claude/claude_desktop_config.json`:
 
@@ -66,7 +48,7 @@ Add to `~/Library/Application Support/Claude/claude_desktop_config.json`:
 </details>
 
 <details>
-<summary>Claude Code</summary>
+<summary><strong>Claude Code</strong></summary>
 
 ```bash
 claude mcp add mcp-ticktick -- mcp-ticktick
@@ -77,7 +59,7 @@ Then set the environment variables in your shell.
 </details>
 
 <details>
-<summary>Cursor</summary>
+<summary><strong>Cursor</strong></summary>
 
 Add to `~/.cursor/mcp.json`:
 
@@ -98,7 +80,7 @@ Add to `~/.cursor/mcp.json`:
 </details>
 
 <details>
-<summary>Windsurf</summary>
+<summary><strong>Windsurf</strong></summary>
 
 Add to `~/.codeium/windsurf/mcp_config.json`:
 
@@ -119,7 +101,7 @@ Add to `~/.codeium/windsurf/mcp_config.json`:
 </details>
 
 <details>
-<summary>VS Code / GitHub Copilot</summary>
+<summary><strong>VS Code / GitHub Copilot</strong></summary>
 
 Add to your VS Code `settings.json`:
 
@@ -141,10 +123,30 @@ Add to your VS Code `settings.json`:
 
 </details>
 
-## Tools
+## What Can It Do?
+
+> *"Add a task to my Shopping list due tomorrow"*
+> *"Check in my meditation habit for today"*
+> *"Show me what I focused on this week"*
+> *"Move all tasks tagged #backlog to the Archive project"*
+
+| Domain | Tools | Highlights |
+|---|---|---|
+| **Tasks** | 10 | Create, edit, complete, delete, move, subtasks, trash |
+| **Projects** | 5 | CRUD with fuzzy name matching |
+| **Tags** | 6 | Create, rename, merge, hierarchies |
+| **Folders** | 4 | Group projects into folders |
+| **Habits** | 8 | Track, check in, streaks, sections |
+| **Filters** | 4 | Saved custom filters |
+| **Focus** | 5 | Pomodoro records, stats, session history |
+| **Calendar** | 3 | Connected calendars and events |
+
+Plus 4 read-only **resources**: `ticktick://profile` · `ticktick://settings` · `ticktick://projects` · `ticktick://tags`
 
 <details>
-<summary>Tasks (10)</summary>
+<summary><strong>Full tool reference</strong></summary>
+
+### Tasks
 
 | Tool | Description |
 |---|---|
@@ -159,10 +161,7 @@ Add to your VS Code `settings.json`:
 | `unparent_task` | Remove a task from its parent |
 | `list_trash` | List deleted tasks |
 
-</details>
-
-<details>
-<summary>Projects (5)</summary>
+### Projects
 
 | Tool | Description |
 |---|---|
@@ -172,10 +171,7 @@ Add to your VS Code `settings.json`:
 | `edit_project` | Update project properties |
 | `delete_project` | Delete a project and its tasks |
 
-</details>
-
-<details>
-<summary>Tags (6)</summary>
+### Tags
 
 | Tool | Description |
 |---|---|
@@ -186,10 +182,7 @@ Add to your VS Code `settings.json`:
 | `edit_tag` | Update tag color, parent, sort |
 | `merge_tags` | Merge one tag into another |
 
-</details>
-
-<details>
-<summary>Folders (4)</summary>
+### Folders
 
 | Tool | Description |
 |---|---|
@@ -198,10 +191,7 @@ Add to your VS Code `settings.json`:
 | `delete_folders` | Delete folders |
 | `rename_folder` | Rename a folder |
 
-</details>
-
-<details>
-<summary>Habits (8)</summary>
+### Habits
 
 | Tool | Description |
 |---|---|
@@ -214,10 +204,7 @@ Add to your VS Code `settings.json`:
 | `archive_habits` | Archive habits (hide, keep data) |
 | `manage_habit_sections` | List, add, delete, rename sections |
 
-</details>
-
-<details>
-<summary>Filters (4)</summary>
+### Filters
 
 | Tool | Description |
 |---|---|
@@ -226,10 +213,7 @@ Add to your VS Code `settings.json`:
 | `edit_filter` | Update a filter |
 | `delete_filters` | Delete filters |
 
-</details>
-
-<details>
-<summary>Focus (5)</summary>
+### Focus
 
 | Tool | Description |
 |---|---|
@@ -239,10 +223,7 @@ Add to your VS Code `settings.json`:
 | `focus_timeline` | Full session history |
 | `focus_save` | Save a completed pomodoro record |
 
-</details>
-
-<details>
-<summary>Calendar (3)</summary>
+### Calendar
 
 | Tool | Description |
 |---|---|
@@ -252,14 +233,19 @@ Add to your VS Code `settings.json`:
 
 </details>
 
-## Resources
+## Authentication
 
-| URI | Description |
-|---|---|
-| `ticktick://profile` | User profile and account status |
-| `ticktick://settings` | User preferences |
-| `ticktick://projects` | All projects with IDs and metadata |
-| `ticktick://tags` | All tags with colors and hierarchy |
+You need a TickTick [OAuth app](https://developer.ticktick.com/manage) (free to create).
+
+| Variable | Required | Description |
+|---|---|---|
+| `TICKTICK_ACCESS_TOKEN` | **Yes** | OAuth access token |
+| `TICKTICK_CLIENT_ID` | No | OAuth client ID (for token refresh) |
+| `TICKTICK_CLIENT_SECRET` | No | OAuth client secret (for token refresh) |
+| `TICKTICK_REFRESH_TOKEN` | No | OAuth refresh token |
+| `TICKTICK_V2_SESSION_TOKEN` | No | Browser `t` cookie for v2 features |
+
+> **v1 vs v2:** The access token covers tasks and projects. For tags, folders, filters, habits, focus, and calendar you also need a v2 session token — grab the `t` cookie from your browser while logged into ticktick.com.
 
 ## Development
 
@@ -267,12 +253,7 @@ Add to your VS Code `settings.json`:
 git clone https://github.com/karbassi/ticktick-mcp.git
 cd ticktick-mcp
 uv sync --all-extras
-
-# Lint & type check
 uv run ruff check src/ tests/
-uv run pyright src/
-
-# Test
 uv run pytest
 ```
 
