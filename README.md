@@ -125,9 +125,9 @@ Add to your VS Code `settings.json`:
 
 ## What Can It Do?
 
-> *"Add a task to my Shopping list due tomorrow"*
-> *"Check in my meditation habit for today"*
-> *"Show me what I focused on this week"*
+> *"Add a task to my Shopping list due tomorrow"*  
+> *"Check in my meditation habit for today"*  
+> *"Show me what I focused on this week"*  
 > *"Move all tasks tagged #backlog to the Archive project"*
 
 | Domain | Tools | Highlights |
