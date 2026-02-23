@@ -14,10 +14,10 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/karbassi/ticktick-mcp"
-Repository = "https://github.com/karbassi/ticktick-mcp"
-Changelog = "https://github.com/karbassi/ticktick-mcp/blob/main/CHANGELOG.md"
-Issues = "https://github.com/karbassi/ticktick-mcp/issues"
+Homepage = "https://github.com/karbassi/mcp-ticktick"
+Repository = "https://github.com/karbassi/mcp-ticktick"
+Changelog = "https://github.com/karbassi/mcp-ticktick/blob/main/CHANGELOG.md"
+Issues = "https://github.com/karbassi/mcp-ticktick/issues"
 
 [project.optional-dependencies]
 dev = [

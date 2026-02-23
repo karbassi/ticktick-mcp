@@ -6,8 +6,8 @@
 
 [![PyPI](https://img.shields.io/pypi/v/mcp-ticktick?style=flat-square)](https://pypi.org/project/mcp-ticktick/)
 [![Python](https://img.shields.io/pypi/pyversions/mcp-ticktick?style=flat-square)](https://pypi.org/project/mcp-ticktick/)
-[![License](https://img.shields.io/github/license/karbassi/ticktick-mcp?style=flat-square)](LICENSE)
-[![CI](https://img.shields.io/github/actions/workflow/status/karbassi/ticktick-mcp/ci.yml?style=flat-square&label=tests)](https://github.com/karbassi/ticktick-mcp/actions)
+[![License](https://img.shields.io/github/license/karbassi/mcp-ticktick?style=flat-square)](LICENSE)
+[![CI](https://img.shields.io/github/actions/workflow/status/karbassi/mcp-ticktick/ci.yml?style=flat-square&label=tests)](https://github.com/karbassi/mcp-ticktick/actions)
 
 A [Model Context Protocol](https://modelcontextprotocol.io/) server that gives LLMs full access to [TickTick](https://ticktick.com).<br>
 Tasks, projects, habits, focus timers, tags, filters, calendar — all of it.
@@ -250,7 +250,7 @@ You need a TickTick [OAuth app](https://developer.ticktick.com/manage) (free to 
 ## Development
 
 ```bash
-git clone https://github.com/karbassi/ticktick-mcp.git
+git clone https://github.com/karbassi/mcp-ticktick.git
 cd ticktick-mcp
 uv sync --all-extras
 uv run ruff check src/ tests/
