@@ -58,7 +58,7 @@ Add to `~/Library/Application Support/Claude/claude_desktop_config.json`:
 {
   "mcpServers": {
     "ticktick": {
-      "command": "ticktick-mcp",
+      "command": "mcp-ticktick",
       "env": {
         "TICKTICK_ACCESS_TOKEN": "your-access-token",
         "TICKTICK_V2_SESSION_TOKEN": "your-session-cookie"
@@ -71,7 +71,7 @@ Add to `~/Library/Application Support/Claude/claude_desktop_config.json`:
 ### Claude Code
 
 ```bash
-claude mcp add ticktick-mcp -- ticktick-mcp
+claude mcp add mcp-ticktick -- mcp-ticktick
 ```
 
 Then set the environment variables in your shell.

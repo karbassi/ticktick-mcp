@@ -29,7 +29,7 @@ dev = [
 ]
 
 [project.scripts]
-ticktick-mcp = "ticktick_mcp.server:main"
+mcp-ticktick = "ticktick_mcp.server:main"
 
 [build-system]
 requires = ["hatchling"]
