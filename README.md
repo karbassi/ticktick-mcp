@@ -28,14 +28,6 @@ A [Model Context Protocol](https://modelcontextprotocol.io/) server that gives L
 pip install mcp-ticktick
 ```
 
-Or from source:
-
-```bash
-git clone https://github.com/karbassi/ticktick-mcp.git
-cd ticktick-mcp
-uv sync
-```
-
 ## Configuration
 
 ### Environment Variables
@@ -50,7 +42,10 @@ uv sync
 
 > **v1 vs v2:** The access token covers tasks and projects. For tags, folders, filters, habits, focus, and calendar, you also need a v2 session token — grab the `t` cookie from your browser while logged into ticktick.com.
 
-### Claude Desktop
+### Client Setup
+
+<details>
+<summary>Claude Desktop</summary>
 
 Add to `~/Library/Application Support/Claude/claude_desktop_config.json`:
 
@@ -68,7 +63,10 @@ Add to `~/Library/Application Support/Claude/claude_desktop_config.json`:
 }
 ```
 
-### Claude Code
+</details>
+
+<details>
+<summary>Claude Code</summary>
 
 ```bash
 claude mcp add mcp-ticktick -- mcp-ticktick
@@ -76,9 +74,77 @@ claude mcp add mcp-ticktick -- mcp-ticktick
 
 Then set the environment variables in your shell.
 
+</details>
+
+<details>
+<summary>Cursor</summary>
+
+Add to `~/.cursor/mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "ticktick": {
+      "command": "mcp-ticktick",
+      "env": {
+        "TICKTICK_ACCESS_TOKEN": "your-access-token",
+        "TICKTICK_V2_SESSION_TOKEN": "your-session-cookie"
+      }
+    }
+  }
+}
+```
+
+</details>
+
+<details>
+<summary>Windsurf</summary>
+
+Add to `~/.codeium/windsurf/mcp_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "ticktick": {
+      "command": "mcp-ticktick",
+      "env": {
+        "TICKTICK_ACCESS_TOKEN": "your-access-token",
+        "TICKTICK_V2_SESSION_TOKEN": "your-session-cookie"
+      }
+    }
+  }
+}
+```
+
+</details>
+
+<details>
+<summary>VS Code / GitHub Copilot</summary>
+
+Add to your VS Code `settings.json`:
+
+```json
+{
+  "mcp": {
+    "servers": {
+      "ticktick": {
+        "command": "mcp-ticktick",
+        "env": {
+          "TICKTICK_ACCESS_TOKEN": "your-access-token",
+          "TICKTICK_V2_SESSION_TOKEN": "your-session-cookie"
+        }
+      }
+    }
+  }
+}
+```
+
+</details>
+
 ## Tools
 
-### Tasks (10)
+<details>
+<summary>Tasks (10)</summary>
 
 | Tool | Description |
 |---|---|
@@ -93,7 +159,10 @@ Then set the environment variables in your shell.
 | `unparent_task` | Remove a task from its parent |
 | `list_trash` | List deleted tasks |
 
-### Projects (5)
+</details>
+
+<details>
+<summary>Projects (5)</summary>
 
 | Tool | Description |
 |---|---|
@@ -103,7 +172,10 @@ Then set the environment variables in your shell.
 | `edit_project` | Update project properties |
 | `delete_project` | Delete a project and its tasks |
 
-### Tags (6)
+</details>
+
+<details>
+<summary>Tags (6)</summary>
 
 | Tool | Description |
 |---|---|
@@ -114,7 +186,10 @@ Then set the environment variables in your shell.
 | `edit_tag` | Update tag color, parent, sort |
 | `merge_tags` | Merge one tag into another |
 
-### Folders (4)
+</details>
+
+<details>
+<summary>Folders (4)</summary>
 
 | Tool | Description |
 |---|---|
@@ -123,7 +198,10 @@ Then set the environment variables in your shell.
 | `delete_folders` | Delete folders |
 | `rename_folder` | Rename a folder |
 
-### Habits (8)
+</details>
+
+<details>
+<summary>Habits (8)</summary>
 
 | Tool | Description |
 |---|---|
@@ -136,7 +214,10 @@ Then set the environment variables in your shell.
 | `archive_habits` | Archive habits (hide, keep data) |
 | `manage_habit_sections` | List, add, delete, rename sections |
 
-### Filters (4)
+</details>
+
+<details>
+<summary>Filters (4)</summary>
 
 | Tool | Description |
 |---|---|
@@ -145,7 +226,10 @@ Then set the environment variables in your shell.
 | `edit_filter` | Update a filter |
 | `delete_filters` | Delete filters |
 
-### Focus (5)
+</details>
+
+<details>
+<summary>Focus (5)</summary>
 
 | Tool | Description |
 |---|---|
@@ -155,13 +239,18 @@ Then set the environment variables in your shell.
 | `focus_timeline` | Full session history |
 | `focus_save` | Save a completed pomodoro record |
 
-### Calendar (3)
+</details>
+
+<details>
+<summary>Calendar (3)</summary>
 
 | Tool | Description |
 |---|---|
 | `list_calendars` | List connected calendar accounts |
 | `list_events` | Query events for a date range |
 | `sync_account` | Full account sync |
+
+</details>
 
 ## Resources
 
